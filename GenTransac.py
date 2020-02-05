@@ -3,6 +3,7 @@ import random
 import matplotlib.pyplot as plt
 import math
 from enum import Enum
+import pandas as pd
 
 
 ##Classe sociale de l'individu
@@ -20,12 +21,27 @@ class TypeDepense(Enum):
         RESTAURANTS = 3
         RETRAITS = 4
         SANTE = 5
-        SHOPPPING = 6
+        SHOPPING = 6
         AUTRES = 7
         LOYER = 8
         ELECTRICITE = 9
         INTERNET = 10
 
+
+##Jobs clients
+class TypeClient(Enum):
+        UNKNOWN = 0
+        STUDENT = 1
+        ENTREPRENEUR = 2
+        HOUSEMAID = 3
+        ADMIN = 4
+        BLUECOLLAR = 5
+        RETIRED = 6
+        SERVICES = 7
+        TECHNICIAN = 8
+        SELFEMPLOYED = 9
+        MANAGEMENT = 10
+        UNEMPLOYED = 11
 
 ##Format d'une transaction
 class Transaction:
@@ -77,7 +93,7 @@ def generatorType(montant):
 
 
 ##Génère les transactions pour 1 mois
-def monthGenerator(listeTransactions,mois, annee, yearSalary):
+def monthGenerator(listeTransactions, mois, annee, yearSalary):
     for j in range(1,math.floor(gauss(60,15))) :
             Transac = generatorTC(yearSalary)
             transactionFinale = Transaction(Transac, generatorType(Transac), mois ,annee)
@@ -85,7 +101,7 @@ def monthGenerator(listeTransactions,mois, annee, yearSalary):
 
 
 ##Génère les transactions pour 1 an
-def yearGenerator(listeTransactions,annee, yearSalary):
+def yearGenerator(listeTransactions, annee, yearSalary):
     for i in range(1, 13):
         monthGenerator(listeTransactions,i, annee, yearSalary)
 
@@ -130,11 +146,12 @@ def CompteurTrans(listeTransactions):
         temp = t.type.value
         Repart[temp] = Repart[temp]+t.valeur
         Sum=Sum+t.valeur
+    print(Sum)
 
-    for i in range(len(Repart)):
-        print("%s : %s"%(i,round(Repart[i],2)))
+    #for i in range(len(Repart)):
+    #    print("%s : %s"%(i,round(Repart[i],2)))
 
-    labels='Alimentation','Loisirs','Multimedia','Restaurant','Retraits','Sante','Shoppping','Autres','Loyer','Electricité','Internet'
+    '''labels='Alimentation','Loisirs','Multimedia','Restaurant','Retraits','Sante','Shopping','Autres','Loyer','Electricité','Internet'
     sizes=[Repart[0]/Sum,Repart[1]/Sum,Repart[2]/Sum,Repart[3]/Sum,Repart[4]/Sum,Repart[5]/Sum,Repart[6]/Sum,Repart[7]/Sum,Repart[8]/Sum,Repart[9]/Sum,Repart[10]/Sum]
 
     plt.pie(sizes,labels=labels, autopct='%1.1f%%',shadow=True,startangle=90)
@@ -142,7 +159,7 @@ def CompteurTrans(listeTransactions):
     plt.axis('equal')
 
     plt.savefig('PieChart01.png')
-    plt.show()
+    plt.show()'''
 
 #rndFactor + eleve = moins random --> 0-100 (10 = 10% de random)
 def randomisationTransations(listeTransactions, rndFactor):
@@ -171,17 +188,23 @@ def randomisationTypeClient(listeTransactions, typeClient):
     elif typeClient == 2:
         rndTypeClient([TypeDepense.MULTIMEDIA,TypeDepense.RESTAURANTS], [TypeDepense.LOISIRS])
     elif typeClient == 3:
-        rndTypeClient([TypeDepense.ALIMENTATION,TypeDepense.SHOPPPING], [TypeDepense.LOISIRS, TypeDepense.MULTIMEDIA])
+        rndTypeClient([TypeDepense.ALIMENTATION,TypeDepense.SHOPPING], [TypeDepense.LOISIRS, TypeDepense.MULTIMEDIA])
     elif typeClient == 4:
-        rndTypeClient([TypeDepense.RESTAURANTS,TypeDepense.SHOPPPING], [TypeDepense.ALIMENTATION, TypeDepense.AUTRES])
+        rndTypeClient([TypeDepense.RESTAURANTS,TypeDepense.SHOPPING], [TypeDepense.ALIMENTATION, TypeDepense.AUTRES])
     elif typeClient == 5:
-        rndTypeClient([TypeDepense.LOISIRS, TypeDepense.SHOPPPING], [TypeDepense.RESTAURANTS])
+        rndTypeClient([TypeDepense.LOISIRS, TypeDepense.SHOPPING], [TypeDepense.RESTAURANTS])
     elif typeClient == 6:
         rndTypeClient([TypeDepense.LOISIRS, TypeDepense.RESTAURANTS], [TypeDepense.MULTIMEDIA])
     elif typeClient == 7:
-        rndTypeClient([TypeDepense.LOISIRS, TypeDepense.RESTAURANTS, TypeDepense.SHOPPPING], [TypeDepense.AUTRES])
+        rndTypeClient([TypeDepense.LOISIRS, TypeDepense.RESTAURANTS, TypeDepense.SHOPPING], [TypeDepense.AUTRES])
     elif typeClient == 8:
-        rndTypeClient([TypeDepense.MULTIMEDIA], [TypeDepense.SHOPPPING])
+        rndTypeClient([TypeDepense.MULTIMEDIA], [TypeDepense.SHOPPING])
+    elif typeClient == 9:
+        rndTypeClient([TypeDepense.MULTIMEDIA, TypeDepense.SHOPPING], [TypeDepense.RESTAURANT, TypeDepense.AUTRE])
+    elif typeClient == 10:
+        rndTypeClient([TypeDepense.RESTAURANT, TypeDepense.MULTIMEDIA, TypeDepense.SANTE], [TypeDepense.SHOPPING])
+    elif typeClient == 11:
+        rndTypeClient([], [TypeDepense.RESTAURANTS, TypeDepense.MULTIMEDIA, TypeDepense.SHOPPING])
 
 def rndTypeClient(listePlus, listeMoins):
     for lt in listeTransactions:
@@ -201,22 +224,46 @@ def rndTypeClient(listePlus, listeMoins):
 6=retired           +loisir, restaurant             -multimedia
 7=services          +loisir, restaurant, shopping   -autres
 8=technician        +multimedia                     -shopping
+
+
+UNKNOWN = 0
+STUDENT = 1
+ENTREPRENEUR = 2
+HOUSEMAID = 3
+ADMIN = 4
+BLUE-COLLAR = 5
+RETIRED = 6
+SERVICES = 7
+TECHNICIAN = 8
+SELF-EMPLOYED = 9
+MANAGEMENT = 10
+UNEMPLOYED = 11
 """
 
+def getJob(txt):
+    switch={
+        'admin.':TypeClient.ADMIN,
+        'blue-collar':TypeClient.BLUECOLLAR,
+        'entrepreneur':TypeClient.ENTREPRENEUR,
+        'housemaid':TypeClient.HOUSEMAID,
+        'management':TypeClient.MANAGEMENT,
+        'retired':TypeClient.RETIRED,
+        'self-employed':TypeClient.SELFEMPLOYED,
+        'services':TypeClient.SERVICES,
+        'student':TypeClient.STUDENT,
+        'technician':TypeClient.TECHNICIAN,
+        'unemployed':TypeClient.UNEMPLOYED,
+        'unknown':TypeClient.UNKNOWN
+    }
+    return switch.get(txt,"bugged")
+        
 
-
-listeTransactions = []
-yearGenerator(listeTransactions, 2019, 30000)
-transactionsRegulieres(listeTransactions, 30000, 2019)
-randomisationTransations(listeTransactions, 9)
-randomisationTypeClient(listeTransactions, 8)
 
 """
 for t in listeTransactions:
     print("Montant : %s Type : %s Date : %s/%s" % (t.valeur, t.type, t.mois, t.annee))
 """
-CompteurTrans(listeTransactions)
-
+#CompteurTrans(listeTransactions)
 
 
 
@@ -237,3 +284,31 @@ for i in range(1, 13):
     totalYear += totalMonth
 print(totalYear)
 """
+
+def getTransactions(listeTransactions = []):
+    user_db = pd.read_csv("D:\\WORK\\PING\\Programming\\user_db.csv")
+    data = user_db[["CustomerId", "EstimatedSalary", "job"]]
+    print(data.head())
+
+    #for index, row in data.iterrows():
+        
+    
+    #for t in listeTransactions:
+        #print("Montant : %s Type : %s Date : %s/%s"%(t.valeur,t.type,t.mois,t.annee))
+
+
+'''
+    salary = 30000
+
+    listeTransactions = []
+    yearGenerator(listeTransactions, 2019, salary)
+    transactionsRegulieres(listeTransactions, salary, 2019)
+    randomisationTransations(listeTransactions, 10)
+    randomisationTypeClient(listeTransactions, 8)
+'''
+
+if __name__ == "__main__":
+    getTransactions()
+
+
+    
