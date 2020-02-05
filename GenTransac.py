@@ -1,3 +1,4 @@
+from tqdm.auto import tqdm
 from random import gauss
 import random
 import matplotlib.pyplot as plt
@@ -165,7 +166,7 @@ def CompteurTrans(listeTransactions):
 #rndFactor + eleve = moins random --> 0-100 (10 = 10% de random)
 def randomisationTransations(listeTransactions, rndFactor):
     indicator = -1
-    rdm = random.randint(0, 4)
+    rdm = random.randint(0, 3)
     if rdm == 0:
         indicator = 1
     elif rdm == 1:
@@ -306,10 +307,13 @@ def generateTransactions():
 
         for t in listeTransactions:
             allTransactions.append([cid, t.type, t.valeur, t.mois, t.annee])
-    
+              
+                
     #for t in listeTransactions:
         #print("Montant : %s Type : %s Date : %s/%s"%(t.valeur,t.type,t.mois,t.annee))
-    df = pd.DataFrame.from_records(data, columns=["CustomerId", "TransacationType", "Value", "Month", "Year"])
+
+    print(allTransactions[0:5])
+    df = pd.DataFrame.from_records(allTransactions, columns=["CustomerId", "TransacationType", "Value", "Month", "Year"])
     df.to_csv("D:\\WORK\\PING\\Programming\\transactions.csv", index=False)
     
 
