@@ -1,4 +1,3 @@
-from tqdm.auto import tqdm
 from random import gauss
 import random
 import matplotlib.pyplot as plt
@@ -257,7 +256,7 @@ def generateTransactions():
             allTransactions.append([cid, t.type, t.valeur, t.mois, t.annee])
 
     print(allTransactions[0:5])
-    df = pd.DataFrame.from_records(allTransactions, columns=["CustomerId", "TransacationType", "Value", "Month", "Year"])
+    df = pd.DataFrame.from_records(allTransactions, columns=["CustomerId", "TransactionType", "Value", "Month", "Year"])
     df.to_csv("D:\\WORK\\PING\\Programming\\transactions.csv", index=False)
 
 if __name__ == "__main__":
