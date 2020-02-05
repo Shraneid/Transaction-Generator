@@ -5,6 +5,7 @@ import math
 from enum import Enum
 import pandas as pd
 
+RANDOM_PERCENT = 10
 
 ##Classe sociale de l'individu
 class TypeClasse(Enum):
@@ -285,16 +286,32 @@ for i in range(1, 13):
 print(totalYear)
 """
 
-def getTransactions(listeTransactions = []):
+def generateTransactions():
     user_db = pd.read_csv("D:\\WORK\\PING\\Programming\\user_db.csv")
     data = user_db[["CustomerId", "EstimatedSalary", "job"]]
     print(data.head())
 
-    #for index, row in data.iterrows():
+    allTransactions = []
+
+    for index, row in data.iterrows():
+        cid = row['CustomerId']
+        salary = row['EstimatedSalary']
+        job = getJob(row['job'])
         
+        listeTransactions = []
+        yearGenerator(listeTransactions, 2019, salary)
+        transactionsRegulieres(listeTransactions, salary, 2019)
+        randomisationTransations(listeTransactions, RANDOM_PERCENT)
+        randomisationTypeClient(listeTransactions, job)
+
+        for t in listeTransactions:
+            allTransactions.append([cid, t.type, t.valeur, t.mois, t.annee])
     
     #for t in listeTransactions:
         #print("Montant : %s Type : %s Date : %s/%s"%(t.valeur,t.type,t.mois,t.annee))
+    df = pd.DataFrame.from_records(data, columns=["CustomerId", "TransacationType", "Value", "Month", "Year"])
+    df.to_csv("D:\\WORK\\PING\\Programming\\transactions.csv", index=False)
+    
 
 
 '''
@@ -308,7 +325,7 @@ def getTransactions(listeTransactions = []):
 '''
 
 if __name__ == "__main__":
-    getTransactions()
+    generateTransactions()
 
 
     
