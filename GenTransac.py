@@ -150,19 +150,6 @@ def CompteurTrans(listeTransactions):
         Sum=Sum+t.valeur
     print(Sum)
 
-    #for i in range(len(Repart)):
-    #    print("%s : %s"%(i,round(Repart[i],2)))
-
-    '''labels='Alimentation','Loisirs','Multimedia','Restaurant','Retraits','Sante','Shopping','Autres','Loyer','Electricité','Internet'
-    sizes=[Repart[0]/Sum,Repart[1]/Sum,Repart[2]/Sum,Repart[3]/Sum,Repart[4]/Sum,Repart[5]/Sum,Repart[6]/Sum,Repart[7]/Sum,Repart[8]/Sum,Repart[9]/Sum,Repart[10]/Sum]
-
-    plt.pie(sizes,labels=labels, autopct='%1.1f%%',shadow=True,startangle=90)
-
-    plt.axis('equal')
-
-    plt.savefig('PieChart01.png')
-    plt.show()'''
-
 #rndFactor + eleve = moins random --> 0-100 (10 = 10% de random)
 def randomisationTransations(listeTransactions, rndFactor):
     indicator = -1
@@ -217,17 +204,6 @@ def rndTypeClient(listePlus, listeMoins):
                 rdm3 = random.choice(listePlus)
                 lt.type = TypeDepense(rdm3)
 """
-0=unknown
-1=student           +loisir, multimedia             -restaurant
-2=entrepreneur      +restaurant, multimedia         -loisir
-3=housemaid         +alimentation, shopping         -multimdeia, loisir
-4=cadre             +restaurant, shopping           -autres, alimentation    
-5=blue-collar       +loisir, shopping               -restaurant
-6=retired           +loisir, restaurant             -multimedia
-7=services          +loisir, restaurant, shopping   -autres
-8=technician        +multimedia                     -shopping
-
-
 UNKNOWN = 0
 STUDENT = 1
 ENTREPRENEUR = 2
@@ -258,34 +234,6 @@ def getJob(txt):
         'unknown':TypeClient.UNKNOWN
     }
     return switch.get(txt,"bugged")
-        
-
-
-"""
-for t in listeTransactions:
-    print("Montant : %s Type : %s Date : %s/%s" % (t.valeur, t.type, t.mois, t.annee))
-"""
-#CompteurTrans(listeTransactions)
-
-
-
-#Affiche les dépense du mois ainsi que leur poste de dépense
-'''for i in range(1,math.floor(gauss(60,15))) :
-		Transac = generatorTC(30000)
-		print("Montant : %s Type : %s"% (Transac, generatorType(Transac)))
-'''
-
-#Total des dépenses par mois puis par an
-"""
-totalYear = 0
-for i in range(1, 13):
-    totalMonth = 0
-    for j in range(1,math.floor(gauss(60,15))) :
-        totalMonth += generatorTC(30000)
-    print(totalMonth)
-    totalYear += totalMonth
-print(totalYear)
-"""
 
 def generateTransactions():
     user_db = pd.read_csv("D:\\WORK\\PING\\Programming\\user_db.csv")
@@ -307,26 +255,10 @@ def generateTransactions():
 
         for t in listeTransactions:
             allTransactions.append([cid, t.type, t.valeur, t.mois, t.annee])
-              
-                
-    #for t in listeTransactions:
-        #print("Montant : %s Type : %s Date : %s/%s"%(t.valeur,t.type,t.mois,t.annee))
 
     print(allTransactions[0:5])
     df = pd.DataFrame.from_records(allTransactions, columns=["CustomerId", "TransacationType", "Value", "Month", "Year"])
     df.to_csv("D:\\WORK\\PING\\Programming\\transactions.csv", index=False)
-    
-
-
-'''
-    salary = 30000
-
-    listeTransactions = []
-    yearGenerator(listeTransactions, 2019, salary)
-    transactionsRegulieres(listeTransactions, salary, 2019)
-    randomisationTransations(listeTransactions, 10)
-    randomisationTypeClient(listeTransactions, 8)
-'''
 
 if __name__ == "__main__":
     generateTransactions()
