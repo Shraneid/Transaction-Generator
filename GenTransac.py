@@ -5,14 +5,13 @@ import math
 from enum import Enum
 import pandas as pd
 
-RANDOM_PERCENT = 10
+RANDOM_PERCENT = 25
 
 ##Classe sociale de l'individu
 class TypeClasse(Enum):
     OUVRIERE = 1
     MOYENNE = 2
     AISEE = 3
-
 
 ##Postes de dépenses courantes
 class TypeDepense(Enum):
@@ -27,7 +26,6 @@ class TypeDepense(Enum):
         LOYER = 8
         ELECTRICITE = 9
         INTERNET = 10
-
 
 ##Jobs clients
 class TypeClient(Enum):
@@ -52,7 +50,6 @@ class Transaction:
         self.mois = mois
         self.annee = annee
 
-
 ##Generateur transactions courantes
 def generatorTC(yearlySalary):
     val = gauss((yearlySalary*0.75/12)*0.01, 60)
@@ -61,7 +58,6 @@ def generatorTC(yearlySalary):
         if val < 0:
             val = val * (-1)
     return round(val, 2)
-
 
 ##Generateur de type de transactions courantes
 def generatorType(montant):
@@ -92,7 +88,6 @@ def generatorType(montant):
         typetransac = TypeDepense(10)
     return typetransac
 
-
 ##Génère les transactions pour 1 mois
 def monthGenerator(listeTransactions, mois, annee, yearSalary):
     for j in range(1,math.floor(gauss(60,15))) :
@@ -100,12 +95,10 @@ def monthGenerator(listeTransactions, mois, annee, yearSalary):
             transactionFinale = Transaction(Transac, generatorType(Transac), mois ,annee)
             listeTransactions.append(transactionFinale)
 
-
 ##Génère les transactions pour 1 an
 def yearGenerator(listeTransactions, annee, yearSalary):
     for i in range(1, 13):
         monthGenerator(listeTransactions,i, annee, yearSalary)
-
 
 ##Ajoute les transactions régulières à la liste des transactions
 def transactionsRegulieres(listeTransactions, yearlySalary, annee):
@@ -119,25 +112,21 @@ def transactionsRegulieres(listeTransactions, yearlySalary, annee):
         transactionInternet=Transaction(Internet,generatorType(-3),i,annee)
         listeTransactions.append(transactionInternet)
 
-
 ##Génère un loyer à partir du salaire annuel
 def loyerGenerator(yearlySalary):
 		monthlysalary = yearlySalary/12
 		loyer = gauss(monthlysalary/3, monthlysalary/12)
 		return round(loyer,2)
 
-
 ##Génère une facture l'éléctricité à partir du loyer
 def ElecGenerator(loyer):
 		Elec = gauss(loyer*0.10, 10)
 		return round(Elec, 2)
 
-
 #Génère une facture d'internet/TV/Teléphone
 def InternetGenerator():
 		Internet = gauss(30, 10)
 		return round(Internet, 2)
-
 
 def CompteurTrans(listeTransactions):
     Repart = [0,0,0,0,0,0,0,0,0,0,0]
@@ -151,6 +140,7 @@ def CompteurTrans(listeTransactions):
 
 #rndFactor + eleve = moins random --> 0-100 (10 = 10% de random)
 def randomisationTransations(listeTransactions, rndFactor):
+    rndFactor = 1000
     indicator = -1
     rdm = random.randint(0, 3)
     if rdm == 0:
@@ -167,39 +157,37 @@ def randomisationTransations(listeTransactions, rndFactor):
             if rdm2 == 0:
                 lt.type = TypeDepense(indicator)
 
-
 def randomisationTypeClient(listeTransactions, typeClient):
     if typeClient == 0:
         randomisationTransations(listeTransactions, 5)
     elif typeClient == 1:
-        rndTypeClient([TypeDepense.LOISIRS,TypeDepense.MULTIMEDIA], [TypeDepense.SANTE])
+        rndTypeClient(listeTransactions, [TypeDepense.LOISIRS,TypeDepense.MULTIMEDIA], [TypeDepense.SANTE])
     elif typeClient == 2:
-        rndTypeClient([TypeDepense.MULTIMEDIA,TypeDepense.RESTAURANTS], [TypeDepense.LOISIRS])
+        rndTypeClient(listeTransactions, [TypeDepense.MULTIMEDIA,TypeDepense.RESTAURANTS], [TypeDepense.LOISIRS])
     elif typeClient == 3:
-        rndTypeClient([TypeDepense.ALIMENTATION,TypeDepense.SHOPPING], [TypeDepense.LOISIRS, TypeDepense.MULTIMEDIA])
+        rndTypeClient(listeTransactions, [TypeDepense.ALIMENTATION,TypeDepense.SHOPPING], [TypeDepense.LOISIRS, TypeDepense.MULTIMEDIA])
     elif typeClient == 4:
-        rndTypeClient([TypeDepense.RESTAURANTS,TypeDepense.SHOPPING], [TypeDepense.ALIMENTATION, TypeDepense.AUTRES])
+        rndTypeClient(listeTransactions, [TypeDepense.RESTAURANTS,TypeDepense.SHOPPING], [TypeDepense.ALIMENTATION, TypeDepense.AUTRES])
     elif typeClient == 5:
-        rndTypeClient([TypeDepense.LOISIRS, TypeDepense.SHOPPING], [TypeDepense.RESTAURANTS])
+        rndTypeClient(listeTransactions, [TypeDepense.LOISIRS, TypeDepense.SHOPPING], [TypeDepense.RESTAURANTS])
     elif typeClient == 6:
-        rndTypeClient([TypeDepense.LOISIRS, TypeDepense.RESTAURANTS], [TypeDepense.MULTIMEDIA])
+        rndTypeClient(listeTransactions, [TypeDepense.LOISIRS, TypeDepense.RESTAURANTS], [TypeDepense.MULTIMEDIA])
     elif typeClient == 7:
-        rndTypeClient([TypeDepense.LOISIRS, TypeDepense.RESTAURANTS, TypeDepense.SHOPPING], [TypeDepense.AUTRES])
+        rndTypeClient(listeTransactions, [TypeDepense.LOISIRS, TypeDepense.RESTAURANTS, TypeDepense.SHOPPING], [TypeDepense.AUTRES])
     elif typeClient == 8:
-        rndTypeClient([TypeDepense.MULTIMEDIA], [TypeDepense.SHOPPING])
+        rndTypeClient(listeTransactions, [TypeDepense.MULTIMEDIA], [TypeDepense.SHOPPING])
     elif typeClient == 9:
-        rndTypeClient([TypeDepense.MULTIMEDIA, TypeDepense.SHOPPING], [TypeDepense.RESTAURANT, TypeDepense.AUTRE])
+        rndTypeClient(listeTransactions, [TypeDepense.MULTIMEDIA, TypeDepense.SHOPPING], [TypeDepense.RESTAURANTS, TypeDepense.AUTRES])
     elif typeClient == 10:
-        rndTypeClient([TypeDepense.RESTAURANT, TypeDepense.MULTIMEDIA, TypeDepense.SANTE], [TypeDepense.SHOPPING])
+        rndTypeClient(listeTransactions, [TypeDepense.RESTAURANTS, TypeDepense.MULTIMEDIA, TypeDepense.SANTE], [TypeDepense.SHOPPING])
     elif typeClient == 11:
-        rndTypeClient([], [TypeDepense.RESTAURANTS, TypeDepense.MULTIMEDIA, TypeDepense.SHOPPING])
+        rndTypeClient(listeTransactions, [TypeDepense.AUTRES, TypeDepense.RETRAITS], [TypeDepense.RESTAURANTS, TypeDepense.MULTIMEDIA, TypeDepense.SHOPPING])
 
-def rndTypeClient(listePlus, listeMoins):
+def rndTypeClient(listeTransactions, listePlus, listeMoins):
     for lt in listeTransactions:
-        if lt.type.value in listeMoins:
-            rdm = random.randint(1, 6)
-            rdm2 = random.randint(0, rdm)
-            if rdm2 == 0:
+        if lt.type in listeMoins:
+            rdm2 = random.randint(0, 100)
+            if rdm2 < 25:
                 rdm3 = random.choice(listePlus)
                 lt.type = TypeDepense(rdm3)
 """
@@ -241,6 +229,7 @@ def generateTransactions():
 
     allTransactions = []
 
+    print("Generating transactions...")
     for index, row in data.iterrows():
         cid = row['CustomerId']
         salary = row['EstimatedSalary']
@@ -250,14 +239,15 @@ def generateTransactions():
         yearGenerator(listeTransactions, 2019, salary)
         transactionsRegulieres(listeTransactions, salary, 2019)
         randomisationTransations(listeTransactions, RANDOM_PERCENT)
-        randomisationTypeClient(listeTransactions, job)
+        randomisationTypeClient(listeTransactions, job.value)
 
         for t in listeTransactions:
             allTransactions.append([cid, t.type, t.valeur, t.mois, t.annee])
-
-    print(allTransactions[0:5])
+    print("Generation done")
+    print("Saving...")
     df = pd.DataFrame.from_records(allTransactions, columns=["CustomerId", "TransactionType", "Value", "Month", "Year"])
     df.to_csv("D:\\WORK\\PING\\Programming\\transactions.csv", index=False)
+    print("Saved !")
 
 if __name__ == "__main__":
     generateTransactions()
